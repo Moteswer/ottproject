@@ -9,3 +9,5 @@ class Customer(models.Model):
     password = models.CharField(max_length=100)  # You should use a more secure way to store passwords
     DoB = models.DateField()
     phonenumber = models.CharField(max_length=15)  # Adjust max_length as needed
+
+    
