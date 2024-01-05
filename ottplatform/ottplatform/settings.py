@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'ottapp'
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -79,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ottapp',
         'USER':'root',
-        'PASSWORD':'Rathonhaketon#99',
+        'PASSWORD':'597858',
         'HOST':'localhost',
         'PORT':3306
 
@@ -127,3 +128,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
