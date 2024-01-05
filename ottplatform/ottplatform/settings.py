@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ottapp',
         'USER':'root',
-        'PASSWORD':'597858',
+        'PASSWORD':'Rathonhaketon#99',
         'HOST':'localhost',
         'PORT':3306
 
@@ -129,7 +129,3 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 347e75c97b1181c4f406f6b58707e40607de5041
