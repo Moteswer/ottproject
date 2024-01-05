@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix-like Page</title>
+    <style>
+        /* Reset default browser styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Main content styles */
+        main {
+            padding: 20px;
+        }
+
+        .thumbnails {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .thumbnail {
+            margin: 10px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        .thumbnail img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">TV Shows</a></li>
+                <li><a href="#">Movies</a></li>
+            </ul>
+        </nav>
+        <div class="user-profile">
+            <!-- Your user profile content here -->
+            <!-- Example: <span>Welcome, Username</span> -->
+        </div>
+        <div class="netflix-logo">
+            <!-- Your Netflix logo -->
+        </div>
+    </header>
+
+    <main>
+        <h1>Featured Content</h1>
+        <div class="thumbnails">
+            <div class="thumbnail">
+                <img src="https://via.placeholder.com/150" alt="Thumbnail 1">
+                <p>Movie Title 1</p>
+            </div>
+            <div class="thumbnail">
+                <img src="https://via.placeholder.com/150" alt="Thumbnail 2">
+                <p>Movie Title 2</p>
+            </div>
+            <div class="thumbnail">
+                <img src="https://via.placeholder.com/150" alt="Thumbnail 3">
+                <p>Movie Title 3</p>
+            </div>
+            <!-- Add more thumbnails as needed -->
+        </div>
+        
+        <div>
+            <h2>New Releases</h2>
+            <p>Description of new releases or more content...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Contact us at support@netflix.com</p>
+        <p>Follow us on social media: <a href="#">Twitter</a>, <a href="#">Facebook</a></p>
+    </footer>
+</body>
+</html>

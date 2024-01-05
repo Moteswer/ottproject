@@ -10,4 +10,8 @@ class Customer(models.Model):
     DoB = models.DateField()
     phonenumber = models.CharField(max_length=15)  # Adjust max_length as needed
 
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 347e75c97b1181c4f406f6b58707e40607de5041
