@@ -47,7 +47,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
     
 admin.site.register(upcoming,UpcomingAdmin)   
-admin.site.register(movie,MoviesAdmin)
+admin.site.register(movie,MoviesAdmin) 
 admin.site.register(series,SeriesAdmin)
 admin.site.register(chromovies,ChromoviesAdmin)
 admin.site.register(newlatest,NewlatestAdmin)

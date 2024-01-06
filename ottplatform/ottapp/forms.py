@@ -8,6 +8,7 @@ class CustomerRegistrationForm(forms.ModelForm):
         fields = ['firstname', 'lastname', 'email', 'username', 'password', 'DoB', 'phonenumber']
         widgets = {
             'password': forms.PasswordInput(),
+            'DoB': forms.DateInput(attrs={'type': 'date'}),
         }
 
 class LoginForm(forms.Form):

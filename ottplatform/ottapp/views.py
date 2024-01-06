@@ -22,7 +22,7 @@ def login_view(request):
             try:
                 customer = Customer.objects.get(username=username)
                 if customer.password == password:
-                    return render(request, 'user/welcome.html')
+                    return render(request, 'user/profile.html')
                 else:
                     form.add_error(None, 'Invalid credentials')
             except Customer.DoesNotExist:
