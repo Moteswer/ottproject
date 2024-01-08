@@ -1,14 +1,7 @@
 # models.py
 from django.db import models
 
-class Customer(models.Model):
-    firstname = models.CharField(max_length=50)
-    lastname = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
-    username = models.CharField(max_length=50, unique=True)
-    password = models.CharField(max_length=100)  # You should use a more secure way to store passwords
-    DoB = models.DateField()
-    phonenumber = models.CharField(max_length=15)  # Adjust max_length as needed
+
 
  
 from unicodedata import name
@@ -139,3 +132,26 @@ class newchromovies(models.Model):
     image2 = models.CharField( max_length=500)
     image3 = models.CharField( max_length=500)
     image4 = models.CharField( max_length=500)
+
+
+
+
+class Customer(models.Model):
+    firstname = models.CharField(max_length=50)
+    lastname = models.CharField(max_length=50)
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=50, unique=True)
+    password = models.CharField(max_length=100)  # You should use a more secure way to store passwords
+    DoB = models.DateField()
+    phonenumber = models.CharField(max_length=15)  # Adjust max_length as needed
+
+class CustomerProfile(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='profile')
+    profilename = models.CharField(max_length=50)
+    pin = models.CharField(max_length=4)  
+    avatar = models.ImageField(upload_to='avatars/')
+
+class KidProfile(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='kid_profiles')
+    profilename = models.CharField(max_length=50)
+    avatar = models.ImageField(upload_to='avatars/')

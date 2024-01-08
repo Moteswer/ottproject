@@ -1,0 +1,8 @@
+<!-- profile_registration.html -->
+<form method="post" action="{% url 'profile_registration' customer.id %}">
+    {% csrf_token %}
+    {{ profile_form.as_p }}
+    {{ kid_form.as_p }}
+    <input type="submit" value="Save Profiles">
+  </form>
+  

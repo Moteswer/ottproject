@@ -1,0 +1,15 @@
+<h1>WELCOME {{ customer.firstname }}</h1>
+
+<h2>Profile Details</h2>
+{% if profile %}
+  {% for i in profile %}
+    <p>Profile {{ i.profilename }} </p>
+  {% endfor %}
+  <!-- Display other profile details as needed -->
+{% endif %}
+
+<!-- Add a button to create a profile -->
+<form method="post" action="{% url 'profile_registration' customer.id %}">
+  {% csrf_token %}
+  <button type="submit">Create Profile</button>
+</form>

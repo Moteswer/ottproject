@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ottapp',
         'USER':'root',
-        'PASSWORD':'597858',
+        'PASSWORD':'Rathonhaketon#99',
         'HOST':'localhost',
         'PORT':3306
 
