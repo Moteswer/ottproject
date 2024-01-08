@@ -1,15 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Title</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        h1, h2, p {
+            margin: 10px 0;
+        }
+
+        form {
+            display: inline-block;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
 <h1>WELCOME {{ customer.firstname }}</h1>
 
 <h2>Profile Details</h2>
 {% if profile %}
+  <p>Profile 1 Name: {{ profile.profilename }}</p>
   {% for i in profile %}
     <p>Profile {{ i.profilename }} </p>
   {% endfor %}
   <!-- Display other profile details as needed -->
 {% endif %}
 
+<h2>Kid Profile Details</h2>
+{% if kid_profiles %}
+  <p>Profile 1 Name: {{ kid_profiles.profilename }}</p>
+  {% for i in kid_profiles %}
+    <p>Profile {{ i.profilename }} </p>
+  {% endfor %}
+  <!-- Display other profile details as needed -->
+{% endif %}
+
 <!-- Add a button to create a profile -->
-<form method="post" action="{% url 'profile_registration' customer.id %}">
+<form method="post" action="{% url 'profile_registration' customer.id %}" enctype="multipart/form-data">
   {% csrf_token %}
-  <button type="submit">Create Profile</button>
+  <button type="submit">Create an Adult Profile</button>
 </form>
+
+<form method="post" action="{% url 'kid_profile_registration' customer.id %}" enctype="multipart/form-data">
+  {% csrf_token %}
+  <button type="submit">Create a Kid Profile</button>
+</form>
+
+</body>
+</html>

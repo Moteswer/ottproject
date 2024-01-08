@@ -1,12 +1,12 @@
 # views.py
 from django.shortcuts import get_object_or_404, render, redirect
-from .forms import CreateProfileForm, CustomerRegistrationForm
+from .forms import CustomerRegistrationForm
 # ottapp/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Customer, CustomerProfile
 from .forms import LoginForm
 from django.shortcuts import render, redirect
@@ -80,28 +80,6 @@ def create_profile(request):
     return render(request, 'user/create_profile.html', {'form': form})
 
 
-def profile_registration_view(request, customer_id):
-    customer = Customer.objects.get(id=customer_id)
-    template_name = 'profile_registration.html'
-
-    if request.method == 'POST':
-        profile_form = CustomerProfileForm(request.POST)
-
-        print(profile_form.is_valid())  # Check if the form is valid
-        print(profile_form.errors)       # Print form errors if any
-
-        if profile_form.is_valid():
-            profile = profile_form.save(commit=False)
-            profile.customer = customer
-            profile.save()
-
-            return redirect('profile_detail', customer_id=customer.id)
-
-    else:
-        profile_form = CustomerProfileForm()
-
-    return render(request, template_name, {'customer': customer, 'profile_form': profile_form})
-
 
 class ProfileDetailView(View):
     template_name = 'profile_detail.html'
@@ -118,3 +96,57 @@ def list_profiles(request, customer_id):
     profiles = customer.customerprofile.all()  # Assuming your profile model is named CustomerProfile
 
     return render(request, 'profile_list.html', {'customer': customer, 'profiles': profiles})
+
+
+def profile_registration_view(request, customer_id):
+    customer = Customer.objects.get(id=customer_id)
+    template_name = 'profile_registration.html'
+
+    # Check the existing number of profiles for the customer
+    total_profiles = CustomerProfile.objects.filter(customer=customer).count()
+
+    if total_profiles >= 4:
+        # Return an error message or handle the limit reached scenario
+        return render(request,'error.html')
+
+    if request.method == 'POST':
+        profile_form = CustomerProfileForm(request.POST, request.FILES)
+
+        if profile_form.is_valid():
+            profile = profile_form.save(commit=False)
+            profile.customer = customer
+            profile.save()
+
+            return redirect('profile_detail', customer_id=customer.id)
+
+    else:
+        profile_form = CustomerProfileForm()
+
+    return render(request, template_name, {'customer': customer, 'profile_form': profile_form})
+
+def kid_profile_registration_view(request, customer_id):
+    customer = Customer.objects.get(id=customer_id)
+    template_name = 'kid_registration.html'
+
+    # Check the existing number of profiles for the customer
+    total_profiles = KidProfile.objects.filter(customer=customer).count()
+
+    if total_profiles >= 2:
+        # Return a JSON response with the error message
+        return render(request,'error.html')
+
+    if request.method == 'POST':
+        profile_form = KidProfileForm(request.POST, request.FILES)
+
+        if profile_form.is_valid():
+            kid_profile = profile_form.save(commit=False)
+            kid_profile.customer = customer
+            kid_profile.save()
+
+            # Optionally, return a success message or an empty JSON response
+            return JsonResponse({})
+
+    else:
+        profile_form = KidProfileForm()
+
+    return render(request, template_name, {'customer': customer, 'profile_form': profile_form})

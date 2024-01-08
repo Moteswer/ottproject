@@ -3,10 +3,6 @@ from django import forms
 from .models import Customer
 from .models import CustomerProfile, KidProfile
 
-class CreateProfileForm(forms.ModelForm):
-    class Meta:
-        model = CustomerProfile
-        fields = ['profilename']
 
 class KidProfileForm(forms.ModelForm):
     class Meta:
@@ -31,5 +27,8 @@ class LoginForm(forms.Form):
 class CustomerProfileForm(forms.ModelForm):
     class Meta:
         model = CustomerProfile
-        fields = ['profilename','pin']
+        fields = ['profilename', 'pin', 'avatar']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['avatar'].widget.attrs.update({'accept': 'image/*'})  # Set the accepted file types to images
