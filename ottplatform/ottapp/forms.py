@@ -25,10 +25,20 @@ class LoginForm(forms.Form):
 
 
 class CustomerProfileForm(forms.ModelForm):
+    confirm_pin = forms.CharField(widget=forms.PasswordInput, label='Confirm PIN')
+    pin = forms.CharField(widget=forms.PasswordInput)
+
     class Meta:
         model = CustomerProfile
-        fields = ['profilename', 'pin', 'avatar']
+        fields = ['profilename', 'pin', 'confirm_pin', 'avatar']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['avatar'].widget.attrs.update({'accept': 'image/*'})  # Set the accepted file types to images
+    def clean(self):
+        cleaned_data = super().clean()
+        pin = cleaned_data.get('pin')
+        confirm_pin = cleaned_data.get('confirm_pin')
+
+        if pin and confirm_pin and pin != confirm_pin:
+            raise forms.ValidationError("PIN and Confirm PIN do not match.")
+
+class PINVerificationForm(forms.Form):
+    pin = forms.CharField(widget=forms.PasswordInput)

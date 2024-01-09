@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Title</title>
+    {% load static %}
     <style>
         body {
             text-align: center;
@@ -12,6 +13,30 @@
 
         h1, h2, p {
             margin: 10px 0;
+        }
+
+        /* Style for profile boxes */
+        .profile-box {
+            display: inline-block;
+            width: 200px; /* Adjust as needed */
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .profile-box img {
+            max-width: 100px; /* Adjust as needed */
+            max-height: 100px; /* Adjust as needed */
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .profile-box a {
+            text-decoration: none;
+            color: inherit;
         }
 
         form {
@@ -22,26 +47,36 @@
 </head>
 <body>
 
-<h1>WELCOME {{ customer.firstname }}</h1>
+<h1>WELCOME {{ customer.firstname|upper }}</h1>
 
 <h2>Profile Details</h2>
 {% if profile %}
-  <p>Profile 1 Name: {{ profile.profilename }}</p>
   {% for i in profile %}
-    <p>Profile {{ i.profilename }} </p>
+    <div class="profile-box">
+      <a href="{% url 'profile_details' customer.id i.id %}">
+        <img src="{% if i.avatar %}{{ i.avatar.url }}{% else %}{% static 'path/to/default/avatar.jpg' %}{% endif %}" alt="Avatar">
+        <p>Profile Name: {{ i.profilename }}</p>
+        <!-- Display other profile details as needed -->
+      </a>
+    </div>
   {% endfor %}
-  <!-- Display other profile details as needed -->
 {% endif %}
 
 <h2>Kid Profile Details</h2>
 {% if kid_profiles %}
-  <p>Profile 1 Name: {{ kid_profiles.profilename }}</p>
   {% for i in kid_profiles %}
-    <p>Profile {{ i.profilename }} </p>
+    <div class="profile-box">
+      <a href="{% url 'kidprofile_details' customer.id i.id %}">
+        <img src="{% if i.avatar %}{{ i.avatar.url }}{% else %}{% static 'path/to/default/avatar.jpg' %}{% endif %}" alt="Avatar">
+        <p>Profile Name: {{ i.profilename }}</p>
+        <!-- Display other profile details as needed -->
+      </a>
+    </div>
   {% endfor %}
-  <!-- Display other profile details as needed -->
 {% endif %}
 
+<br>
+<br>
 <!-- Add a button to create a profile -->
 <form method="post" action="{% url 'profile_registration' customer.id %}" enctype="multipart/form-data">
   {% csrf_token %}
