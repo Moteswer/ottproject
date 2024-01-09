@@ -7,12 +7,13 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse, JsonResponse
-from .models import Customer, CustomerProfile, movie
+from .models import Customer, CustomerProfile
 from .forms import LoginForm
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Customer, CustomerProfile, KidProfile
+from .models import Customer, CustomerProfile, KidProfile,movie
 from .forms import CustomerProfileForm, KidProfileForm
+from django.urls import reverse
 
 def login_view(request):
     form = LoginForm()
@@ -156,7 +157,8 @@ def profile_details(request, customer_id, profile_id):
 
             if entered_pin == profile.pin:
                 # PIN is correct, redirect to the movie_list function
-                return redirect('movie_list')
+                movie_list_url = reverse('movie_list', args=[profile_id])
+                return redirect(movie_list_url)
             else:
                 # PIN is incorrect, show an error message
                 pin_form.add_error('pin', 'Incorrect PIN. Please try again.')
@@ -173,6 +175,10 @@ def kidprofile_details(request, customer_id, profile_id):
 
     return render(request, 'hellokids.html', {'customer': customer, 'profile': profile})
 
-def movie_list(request):
-    movies = movie.objects.all()
-    return render(request, 'hello.html', {'movies': movies})
+class MovieListView(View):
+    template_name = 'hello.html'
+
+    def get(self, request, profile_id):
+        profile = get_object_or_404(CustomerProfile, id=profile_id)
+        customer_movies = movie.objects.filter(customer_profile=profile)
+        return render(request, self.template_name, {'movies': customer_movies, 'profile': profile})

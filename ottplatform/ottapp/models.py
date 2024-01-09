@@ -9,15 +9,21 @@ from django.db import models
 
 # Create your models here.
 class movie(models.Model):
+    customer_profile = models.ForeignKey('CustomerProfile', on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=50)
     year = models.PositiveIntegerField()
-    desc = models.TextField
-    url= models.URLField
+    desc = models.TextField(default='')  # Set default value to an empty string
+    url = models.URLField(default='')
     rating = models.FloatField()
-    image1 = models.CharField( max_length=500)
-    image2 = models.CharField( max_length=500)
-    image3 = models.CharField( max_length=500)
-    image4 = models.CharField( max_length=500)
+    image = models.ImageField(upload_to='media/', default='')
+
+    def __str__(self):
+        return self.name
+
+class CustomerProfileImage(models.Model):
+    customer_profile = models.ForeignKey('CustomerProfile', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='media/', default='default_image.jpg')
+
 
 class series(models.Model):
     name = models.CharField(max_length=50)
@@ -149,9 +155,9 @@ class CustomerProfile(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='profile')
     profilename = models.CharField(max_length=50)
     pin = models.CharField(max_length=4)  
-    avatar = models.ImageField(upload_to='avatars/')
+    avatar = models.ImageField(upload_to='media/')
 
 class KidProfile(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='kid_profiles')
     profilename = models.CharField(max_length=50)
-    avatar = models.ImageField(upload_to='avatars/')
+    avatar = models.ImageField(upload_to='media/')

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Customer
+from .models import Customer, CustomerProfileImage
 from django.contrib import admin
 from.models import movie
 from.models import newmovie
@@ -45,7 +45,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ('firstname','username', 'password', 'email','phonenumber')  # Customize the fields you want to display
     # Add other configurations as needed
 
-    
+admin.site.register(CustomerProfileImage)    
 admin.site.register(upcoming,UpcomingAdmin)   
 admin.site.register(movie,MoviesAdmin) 
 admin.site.register(series,SeriesAdmin)

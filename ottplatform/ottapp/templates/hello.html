@@ -15,58 +15,59 @@
             flex-direction: column;
             min-height: 100vh;
         }
-
+    
         .header {
             padding: 20px;
             text-align: center;
         }
-
+    
         .header img {
             width: 120px;
             height: auto;
         }
-
+    
         .main-content {
             flex-grow: 1;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-
+    
         h1 {
             color: #e50914;
         }
-
+    
         .movie-container {
             display: flex;
             flex-wrap: wrap;
+            justify-content: space-between;
         }
-
+    
         .movie-card {
             width: 200px;
-            margin-right: 20px;
             margin-bottom: 20px;
         }
-
+    
         .movie-card img {
-            width: 100%;
-            height: auto;
+            width: 85%;
+            height: 200px; /* Set a fixed height for all movie images */
+            object-fit: cover; /* Maintain aspect ratio and cover the container */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
+    
         .movie-card h3 {
             margin-top: 10px;
             font-size: 16px;
             text-align: center;
         }
-
+    
         .movie-card p {
             font-size: 14px;
             margin: 8px 0;
             text-align: center;
         }
-
+    
         footer {
             text-align: center;
             padding: 20px;
@@ -74,6 +75,7 @@
             color: #fff;
         }
     </style>
+    
 </head>
 <body>
 
@@ -87,7 +89,7 @@
         <!-- Loop through movies and display details -->
         {% for movie in movies %}
             <div class="movie-card">
-                <img src="{{ movie.image1 }}" alt="{{ movie.name }}">
+                <img src="{{ movie.image.url }}" alt="{{ movie.name }}">
                 <h3>{{ movie.name }}</h3>
                 <p>Year: {{ movie.year }}</p>
                 <p>Rating: {{ movie.rating }}</p>
