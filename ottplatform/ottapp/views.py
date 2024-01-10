@@ -7,8 +7,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse, JsonResponse
-from .models import Customer, CustomerProfile
+from .models import Customer, CustomerProfile, moviekid, upcoming, waste
 from .forms import LoginForm
+from django.views.generic import ListView
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Customer, CustomerProfile, KidProfile,movie
@@ -136,7 +137,7 @@ def kid_profile_registration_view(request, customer_id):
             kid_profile.save()
 
             # Optionally, return a success message or an empty JSON response
-            return JsonResponse({})
+            return redirect('profile_detail', customer_id=customer.id)
 
     else:
         profile_form = KidProfileForm()
@@ -172,6 +173,8 @@ def profile_details(request, customer_id, profile_id):
 def kidprofile_details(request, customer_id, profile_id):
     customer = get_object_or_404(Customer, id=customer_id)
     profile = get_object_or_404(KidProfile, id=profile_id, customer=customer)
+    kidmovielist_url = reverse('kidmovielist', args=[profile_id])
+    return redirect(kidmovielist_url)
 
     return render(request, 'hellokids.html', {'customer': customer, 'profile': profile})
 
@@ -181,4 +184,50 @@ class MovieListView(View):
     def get(self, request, profile_id):
         profile = get_object_or_404(CustomerProfile, id=profile_id)
         customer_movies = movie.objects.filter(customer_profile=profile)
-        return render(request, self.template_name, {'movies': customer_movies, 'profile': profile})
+        logo=waste.objects.all()
+        upmov = upcoming.objects.all()
+        return render(request, self.template_name, {'movies': customer_movies, 'profile': profile,'logo':logo,'upmov':upmov})
+    
+class Moviedetail(View):
+    template_name = 'movie_detail.html'
+
+    def get(self, request, id):
+        # Retrieve the specific movie details
+        movie_instance = get_object_or_404(movie, id=id)
+
+        
+
+        # If you want to retrieve all movies related to a specific profile
+        # you can use a related field, assuming your Movie model has a ForeignKey
+        # field named 'customer_profile'
+        customer_movies = movie.objects.filter(customer_profile=movie_instance.customer_profile)
+
+        return render(request, self.template_name, {'movie': movie_instance, 'customer_movies': customer_movies})
+    
+
+
+class KidMovieListView(ListView):
+    model = moviekid
+    template_name = 'hellokids.html'
+    context_object_name = 'movies'
+
+    def get_queryset(self):
+        kid_profile_id = self.kwargs.get('id')
+        return moviekid.objects.filter(kid_profile_id=kid_profile_id)
+    
+class MovieKidDetail(View):
+    template_name = 'moviekid_detail.html'
+
+    def get(self, request, id):
+        # Retrieve the specific movie kid details
+        moviekid_instance = get_object_or_404(moviekid, id=id)
+
+        # Retrieve all movie kids related to the same customer profile
+        customer_moviekids = moviekid.objects.filter(kid_profile=moviekid_instance.kid_profile_id)
+
+        return render(request, self.template_name, {'moviekid': moviekid_instance, 'customer_moviekids': customer_moviekids})
+   
+
+
+    
+

@@ -11,9 +11,12 @@ from django.db import models
 class movie(models.Model):
     customer_profile = models.ForeignKey('CustomerProfile', on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=50)
+    Duration = models.CharField(max_length=50,default='')
+    Genre= models.CharField(max_length=100,default='')
+    Director=models.CharField(max_length=100,default='')
     year = models.PositiveIntegerField()
     desc = models.TextField(default='')  # Set default value to an empty string
-    url = models.URLField(default='')
+    link = models.URLField(default='')
     rating = models.FloatField()
     image = models.ImageField(upload_to='media/', default='')
 
@@ -161,3 +164,32 @@ class KidProfile(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='kid_profiles')
     profilename = models.CharField(max_length=50)
     avatar = models.ImageField(upload_to='media/')
+
+class moviekid(models.Model):
+    kid_profile = models.ForeignKey(KidProfile, on_delete=models.CASCADE, related_name='movies')
+    title = models.CharField(max_length=100)
+    release_date = models.DateField()
+    genre = models.CharField(max_length=50)
+    description = models.TextField()
+    poster = models.ImageField(upload_to='media/')
+
+    def __str__(self):
+        return self.title
+    
+class waste(models.Model):
+    logo = models.ImageField(upload_to='waste/')
+
+
+class upcoming(models.Model):
+    name = models.CharField(max_length=50)
+    Duration = models.CharField(max_length=50,default='')
+    Genre= models.CharField(max_length=100,default='')
+    Director=models.CharField(max_length=100,default='')
+    year = models.PositiveIntegerField()
+    desc = models.TextField(default='')  # Set default value to an empty string
+    link = models.URLField(default='')
+    image = models.ImageField(upload_to='media/', default='')
+
+    def __str__(self):
+        return self.name
+    

@@ -15,89 +15,129 @@
             flex-direction: column;
             min-height: 100vh;
         }
-    
+        
         .header {
             padding: 20px;
             text-align: center;
         }
-    
+        
         .header img {
             width: 120px;
             height: auto;
         }
-    
+        
         .main-content {
             flex-grow: 1;
-            max-width: 1200px;
+            max-width: 1450px;
             margin: 0 auto;
             padding: 20px;
         }
-    
+        
         h1 {
             color: #e50914;
         }
-    
-        .movie-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
+        
+        .movie-list {
+            display: flex; /* Use flexbox to create a horizontal layout */
+            gap: 20px; /* Adjust the gap between movie cards as needed */
+            overflow-x: auto; /* Allow horizontal scrolling if there are many movies */
+            padding-bottom: 20px; /* Add some space at the bottom for clarity */
         }
-    
+        
         .movie-card {
-            width: 200px;
-            margin-bottom: 20px;
+            width: 200px; /* Set a fixed width for movie cards */
+            text-align: center;
+            flex-shrink: 0; /* Prevent movie cards from shrinking */
         }
-    
+        
         .movie-card img {
-            width: 85%;
-            height: 200px; /* Set a fixed height for all movie images */
-            object-fit: cover; /* Maintain aspect ratio and cover the container */
+            width: 100%;
+            height: 70%;
+            object-fit: cover;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
         }
-    
+        
         .movie-card h3 {
             margin-top: 10px;
             font-size: 16px;
             text-align: center;
         }
-    
+        
         .movie-card p {
             font-size: 14px;
             margin: 8px 0;
             text-align: center;
         }
-    
+        
         footer {
             text-align: center;
             padding: 20px;
             background-color: #222;
             color: #fff;
         }
+
+      
+        .movie-list::-webkit-scrollbar {
+            width: 0.5em;
+        }
+        
+        .movie-list::-webkit-scrollbar-thumb {
+            background-color: #111; /* Set to the same color as your webpage background */
+        }
+        
+        .movie-list::-webkit-scrollbar-track {
+            background-color: #111; /* Set to the same color as your webpage background */
+        }
+        
+
+        
     </style>
     
 </head>
 <body>
-
-<div class="header">
-    <img src="netflix-logo.png" alt="Netflix Logo">
-</div>
+<img src="netflix-logo.png" alt="a">
 
 <div class="main-content">
     <h1>Popular Movies</h1>
-    <div class="movie-container">
-        <!-- Loop through movies and display details -->
+    <div class="movie-list">
         {% for movie in movies %}
-            <div class="movie-card">
+        <div class="movie-card">
+            <a href="{% url 'movie_detail' movie.id %}">
                 <img src="{{ movie.image.url }}" alt="{{ movie.name }}">
-                <h3>{{ movie.name }}</h3>
-                <p>Year: {{ movie.year }}</p>
-                <p>Rating: {{ movie.rating }}</p>
-                <!-- Add other movie details as needed -->
-            </div>
+            </a>
+            <h2>{{ movie.name }}</h2>
+            <p>Duration: {{ movie.Duration }}</p>
+            <p>Year: {{ movie.year }}</p>
+            <p>Rating: {{ movie.rating }}</p>
+        </div>
         {% endfor %}
     </div>
 </div>
+
+
+<div class="main-content">
+    <h1>Upcoming Movies</h1>
+    <div class="movie-list">
+        {% for i  in upmov %}
+        <div class="movie-card">
+            <a href="#">
+                <img src="{{ i.image.url }}" alt="{{ i.name }}">
+            </a>
+          
+            <h2>{{ i.name }}</h2>
+            <p>Duration: {{ i.Duration }}</p>
+            <p>Year: {{ i.year }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+
 
 <footer>
     <p>&copy; 2024 Netflix Clone</p>

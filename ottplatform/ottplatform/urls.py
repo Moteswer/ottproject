@@ -4,6 +4,11 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include  # Import the necessary view
 
+
+admin.site.site_header = "OTT PLATFORM"
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('ottapp.urls')),

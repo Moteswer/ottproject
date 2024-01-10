@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Customer, CustomerProfileImage
+from .models import Customer, CustomerProfileImage, waste
 from django.contrib import admin
 from.models import movie
 from.models import newmovie
@@ -9,7 +9,7 @@ from.models import upcoming
 from.models import newupcoming
 from.models import  newlatest
 from.models import chromovies
-from.models import newchromovies
+from.models import newchromovies,moviekid
 # Register your models here.
 
 class ChromoviesAdmin(admin.ModelAdmin):
@@ -55,3 +55,6 @@ admin.site.register(newmovie,NewmovieAdmin)
 admin.site.register(newseries,NewseriesAdmin)
 admin.site.register(newupcoming,NewupcomingAdmin)
 admin.site.register(newchromovies,NewchromoviesAdmin)
+admin.site.register(moviekid)
+admin.site.register(waste)
+
