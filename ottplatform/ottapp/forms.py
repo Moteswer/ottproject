@@ -45,11 +45,22 @@ class PINVerificationForm(forms.Form):
 
 
 class EditProfileForm(forms.ModelForm):
+    pin = forms.CharField(widget=forms.PasswordInput)
+
     class Meta:
         model = CustomerProfile
-        fields = ['profile_name', 'pin', 'avatar']
+        fields = ['profilename', 'pin', 'avatar']
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Customize the queryset to fetch profile names dynamically
-        self.fields['profile_name'].queryset = CustomerProfile.objects.values_list('profile_name', flat=True).distinct()
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+
+        # Set initial values for the fields based on the instance
+        if self.instance:
+            self.initial['profilename'] = self.instance.profilename
+            self.initial['pin'] = self.instance.pin
+            self.initial['avatar'] = self.instance.avatar
+
+class KidProfileForm(forms.ModelForm):
+    class Meta:
+        model = KidProfile
+        fields = ['profilename', 'avatar']

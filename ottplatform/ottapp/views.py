@@ -1,6 +1,6 @@
 # views.py
 from django.shortcuts import get_object_or_404, render, redirect
-from .forms import CustomerRegistrationForm, EditProfileForm, PINVerificationForm
+from .forms import  CustomerRegistrationForm, EditProfileForm,PINVerificationForm 
 # ottapp/views.py
 from django.template.loader import render_to_string
 from django.db.models import Q
@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from .models import Customer, CustomerProfile, moviekid, upcoming, waste
 from .forms import LoginForm
 from django.views.generic import ListView
@@ -281,18 +281,59 @@ def kidmovie_list(request):
     return render(request, 'hellokids.html', {'kid': kid})
 
 
+def update_profile(request, customer_id, profile_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    profile = get_object_or_404(CustomerProfile, id=profile_id)
 
-def edit_profile(request):
+    form = EditProfileForm(request.POST or None, request.FILES or None, instance=profile)
+
     if request.method == 'POST':
-        form = EditProfileForm(request.POST, request.FILES)
         if form.is_valid():
-            profile_name = form.cleaned_data['profile_name']
-            profile = CustomerProfile.objects.get(profile_name=profile_name)
-            form = EditProfileForm(request.POST, request.FILES, instance=profile)
-            if form.is_valid():
-                form.save()
-                return redirect('profile_list')  # Replace with your actual profile list view name
-    else:
-        form = EditProfileForm()
+            form.save()
+            return redirect('profile_detail', customer_id=customer.id)
 
-    return render(request, 'edit_profile.html', {'form': form})
+    return render(request, 'update_profile.html', {'customer': customer, 'profile': profile, 'form': form})
+
+
+# views.py
+
+
+def delete_profile(request, customer_id, profile_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    profile = get_object_or_404(CustomerProfile, id=profile_id)
+
+    if request.method == 'POST':
+        profile.delete()
+        return redirect('profile_detail', customer_id=customer.id)
+
+    return render(request, 'delete_profile.html', {'customer': customer, 'profile': profile})
+
+# views.py
+from django.shortcuts import get_object_or_404, redirect
+from .models import KidProfile
+
+def delete_kid_profile(request, customer_id, kid_profile_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    kid_profile = get_object_or_404(KidProfile, id=kid_profile_id)
+
+    if request.method == 'POST':
+        kid_profile.delete()
+        return redirect('profile_detail', customer_id=customer.id)
+
+    return render(request, 'delete_kid_profile.html', {'customer': customer, 'kid_profile': kid_profile})
+
+
+
+def update_kid_profile(request, customer_id, kid_profile_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    kid_profile = get_object_or_404(KidProfile, id=kid_profile_id)
+
+    if request.method == 'POST':
+        form = KidProfileForm(request.POST, request.FILES, instance=kid_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile_detail', customer_id=customer.id)
+    else:
+        form = KidProfileForm(instance=kid_profile)
+
+    return render(request, 'update_kid_profile.html', {'customer': customer, 'kid_profile': kid_profile, 'form': form})

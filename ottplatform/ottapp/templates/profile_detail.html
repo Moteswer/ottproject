@@ -6,46 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Title</title>
     {% load static %}
+    
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
-            text-align: center;
-            font-family: 'Arial', sans-serif; /* Use a Netflix-like font */
-            background-color: #111; /* Netflix background color */
-            color: #fff; /* Netflix text color */
+            font-family: 'Arial', sans-serif;
+            background: url('/media/media/netflix-codes.webpnetflix-codes.webpt') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            margin: 0;
+            padding: 0;
         }
 
         h1, h2, p {
             margin: 10px 0;
         }
 
-        /* Style for profile boxes */
         .profile-box {
             display: inline-block;
-            width: 200px; /* Adjust as needed */
+            width: 200px;
             margin: 10px;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+            transition: background-color 0.3s ease;
         }
 
         .profile-box:hover {
-            background-color: #e50914; /* Netflix red color on hover */
+            background-color: #e50914;
         }
 
         .profile-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 8px; /* Maintain border-radius for rounded corners */
+            border-radius: 8px;
         }
 
         .profile-box a {
             text-decoration: none;
             color: inherit;
-            display: block; /* Make the entire box clickable */
+            display: block;
         }
 
         form {
@@ -54,66 +59,128 @@
         }
 
         button {
-            background-color: #e50914; /* Netflix red color for buttons */
+            background-color: #e50914;
             color: #fff;
             padding: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #ff7f00; /* Change color on hover */
+            background-color: #ff7f00;
+        }
+
+        .gear-icon {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 21%;
+            left: 90%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            width: 150px;
+        }
+
+        .popup p {
+            color: black;
         }
     </style>
 </head>
 <body>
+    <div class="gear-icon" onclick="openSettings()">⚙️</div>
 
-<h1>WELCOME {{ customer.firstname|upper }}</h1>
-
-<h2>Profile Details</h2>
-{% if profile %}
-  {% for i in profile %}
-    <div class="profile-box">
-      <a href="{% url 'profile_details' customer.id i.id %}">
-        <img src="{% if i.avatar %}{{ i.avatar.url }}{% else %}{% static 'path/to/default/avatar.jpg' %}{% endif %}" alt="Avatar">
-        <p>Profile Name: {{ i.profilename }}</p>
-        <!-- Display other profile details as needed -->
-      </a>
+    <div id="settingsPopup" class="popup">
+        <div>
+            <p><b>Edit Profile Details</b></p>
+            <a href="#">
+                <button>Edit Profile Name</button>
+            </a>
+        </div>
+        <div>
+            <button onclick="editKidProfile()"></button>
+        </div>
     </div>
-  {% endfor %}
-{% endif %}
 
-<h2>Kid Profile Details</h2>
-{% if kid_profiles %}
-  {% for i in kid_profiles %}
-    <div class="profile-box">
-      <a href="{% url 'kidprofile_details' customer.id i.id %}">
-        <img src="{% if i.avatar %}{{ i.avatar.url }}{% else %}{% static 'path/to/default/avatar.jpg' %}{% endif %}" alt="Avatar">
-        <p>Profile Name: {{ i.profilename }}</p>
-        <!-- Display other profile details as needed -->
-      </a>
-    </div>
-  {% endfor %}
-{% endif %}
+    <h1>WELCOME {{ customer.firstname|upper }}</h1>
 
-<br>
-<br>
-<!-- Add a button to create a profile -->
-<form method="post" action="{% url 'profile_registration' customer.id %}" enctype="multipart/form-data">
-  {% csrf_token %}
-  <button type="submit">Create an Adult Profile</button>
-</form>
+    <h2>Profile Details</h2>
+    {% if profile %}
+        {% for i in profile %}
+            <div class="profile-box">
+                <a href="{% url 'profile_details' customer.id i.id %}">
+                    <img src="{{ i.avatar.url}}" alt="Avatar">
+                    <p>Profile Name: {{ i.profilename }}</p>
 
-<button>Edit Profile</button>
+                    <form method="post" action="{% url 'update_profile' customer.id i.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Update</button>
+                    </form>
 
+                    <form method="post" action="{% url 'delete_profile' customer.id i.id %}" onclick="confirmDelete('{{ i.profilename }}')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </a>
+            </div>
+        {% endfor %}
+    {% endif %}
 
-<form method="post" action="{% url 'kid_profile_registration' customer.id %}" enctype="multipart/form-data">
-  {% csrf_token %}
-  <button type="submit">Create a Kid Profile</button>
-</form>
+    <h2>Kid Profile Details</h2>
+    {% if kid_profiles %}
+        {% for i in kid_profiles %}
+            <div class="profile-box">
+                <a href="{% url 'kidprofile_details' customer.id i.id %}">
+                    <img src="{{ i.avatar.url }}" alt="Avatar">
+                    <p>Profile Name: {{ i.name }}</p>
 
+                    <form method="post" action="{% url 'update_kid_profile' customer.id i.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Update</button>
+                    </form>
 
+                    <form method="post" action="{% url 'delete_kid_profile' customer.id i.id %}" onclick="confirmDelete('{{ i.name }}')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </a>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <br>
+    <br>
+
+    <!-- Add a button to create a profile -->
+    <form method="post" action="{% url 'profile_registration' customer.id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Create an Adult Profile</button>
+    </form>
+
+    <button class="btn btn-primary">Edit Profile</button>
+
+    <form method="post" action="{% url 'kid_profile_registration' customer.id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning">Create a Kid Profile</button>
+    </form>
+
+    <script>
+        function confirmDelete(profileName) {
+            return confirm("Are you sure you want to delete the profile named '" + profileName + "'? Click 'OK' to proceed or 'Cancel' to abort.") === true;
+        }
+    </script>
 </body>
 </html>

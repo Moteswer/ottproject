@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import MovieKidDetail, MovieListView, Moviedetail, ProfileDetailView, edit_profile,  kidmovie_list,kidprofile_details, home_view, kid_profile_registration_view, list_profiles, movie_list, profile_details, profile_registration_view, register_customer,login_view,KidMovieListView, upcoming_movies
+from .views import  MovieKidDetail, MovieListView, Moviedetail, ProfileDetailView, delete_kid_profile, delete_profile,  kidmovie_list,kidprofile_details, home_view, kid_profile_registration_view, list_profiles, movie_list, profile_details, profile_registration_view, register_customer,login_view,KidMovieListView, upcoming_movies, update_kid_profile, update_profile
 
 urlpatterns = [
     path('', home_view, name='home'),
@@ -19,6 +19,10 @@ urlpatterns = [
     path('upcoming_movies/<int:movie_id>/', upcoming_movies, name='upcoming_movies'),
     path('movies/',movie_list,name='movie_list'),
     path('kidmovies/',kidmovie_list,name='kidmovie_list'),
-     path('edit_profile/<int:customer_id>/<int:profile_id>/', edit_profile, name='edit_profile'),
+    path('update_profile/<int:customer_id>/<int:profile_id>/', update_profile, name='update_profile'),
+    path('delete_profile/<int:customer_id>/<int:profile_id>/', delete_profile, name='delete_profile'),
+    path('update_kid_profile/<int:customer_id>/<int:kid_profile_id>/', update_kid_profile, name='update_kid_profile'),
+    path('delete_kid_profile/<int:customer_id>/<int:kid_profile_id>/', delete_kid_profile, name='delete_kid_profile'),
+
   
 ]
