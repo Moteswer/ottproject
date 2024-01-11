@@ -9,6 +9,9 @@
     <style>
         body {
             text-align: center;
+            font-family: 'Arial', sans-serif; /* Use a Netflix-like font */
+            background-color: #111; /* Netflix background color */
+            color: #fff; /* Netflix text color */
         }
 
         h1, h2, p {
@@ -25,23 +28,43 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .profile-box:hover {
+            background-color: #e50914; /* Netflix red color on hover */
         }
 
         .profile-box img {
-            max-width: 100px; /* Adjust as needed */
-            max-height: 100px; /* Adjust as needed */
-            border-radius: 50%;
-            margin-bottom: 10px;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px; /* Maintain border-radius for rounded corners */
         }
 
         .profile-box a {
             text-decoration: none;
             color: inherit;
+            display: block; /* Make the entire box clickable */
         }
 
         form {
             display: inline-block;
             margin: 10px;
+        }
+
+        button {
+            background-color: #e50914; /* Netflix red color for buttons */
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        button:hover {
+            background-color: #ff7f00; /* Change color on hover */
         }
     </style>
 </head>
@@ -82,6 +105,9 @@
   {% csrf_token %}
   <button type="submit">Create an Adult Profile</button>
 </form>
+
+<a href="{% url 'edit_profile' customer.id %}"><button>Edit Profile</button></a>
+
 
 <form method="post" action="{% url 'kid_profile_registration' customer.id %}" enctype="multipart/form-data">
   {% csrf_token %}

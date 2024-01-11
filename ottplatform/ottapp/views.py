@@ -1,7 +1,9 @@
 # views.py
 from django.shortcuts import get_object_or_404, render, redirect
-from .forms import CustomerRegistrationForm, PINVerificationForm
+from .forms import CustomerRegistrationForm, EditProfileForm, PINVerificationForm
 # ottapp/views.py
+from django.template.loader import render_to_string
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -191,7 +193,7 @@ class MovieListView(View):
 class Moviedetail(View):
     template_name = 'movie_detail.html'
 
-    def get(self, request, id):
+    def get(self, request, id,):
         # Retrieve the specific movie details
         movie_instance = get_object_or_404(movie, id=id)
 
@@ -229,5 +231,92 @@ class MovieKidDetail(View):
    
 
 
-    
+def upcoming_movies(request, movie_id):
+    # Retrieve the movie details from the database
+    movie = get_object_or_404(upcoming, id=movie_id)
 
+    # You can add any additional logic or processing here if needed
+
+    # Render the movie detail template with the movie object
+    return render(request, 'upmoviedetail.html', {'movie': movie})
+
+
+def movie_list(request):
+    query = request.GET.get('q', '')
+    move = movie.objects.all()
+
+    if query:
+        # Filter movies for each field individually using icontains for partial matching
+        move = move.filter(
+            Q(name__icontains=query) |
+            Q(Genre__icontains=query) |
+            Q(Director__icontains=query) |
+            Q(year__icontains=query)
+        ).distinct()
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('partials/_movie_list.html', {'move': move})
+        return JsonResponse({'html': html})
+
+    return render(request, 'hello.html', {'move': move})
+
+
+def kidmovie_list(request):
+    query = request.GET.get('q', '')
+    kid = moviekid.objects.all()
+
+    if query:
+
+        # Check if the query represents a number (year)
+        # Filter movies for each field individually
+        kid = kid.filter(
+                Q(title__icontains=query) |
+                Q(genre__icontains=query)
+            ).distinct()
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('partials/kidmovie_list.html', {'kid': kid})
+        return JsonResponse({'html': html})
+
+    return render(request, 'hellokids.html', {'kid': kid})
+
+def edit_go(request):
+    render(request,'user/edit_profile.html')
+
+def edit_profile(request, customer_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    profiles = CustomerProfile.objects.filter(customer=customer)
+
+    if request.method == 'POST':
+        profile_id = request.POST.get('profile_id')
+        profile = get_object_or_404(CustomerProfile, id=profile_id)
+
+        form = EditProfileForm(request.POST, request.FILES, instance=profile)
+
+        if form.is_valid():
+            # Save the form data
+            form.save()
+            return redirect('profile_list', customer_id=customer.id)
+    else:
+        # Get the selected profile (if any) and set it as the initial instance for the form
+        selected_profile_id = request.POST.get('profile_id')
+        selected_profile = get_object_or_404(CustomerProfile, id=selected_profile_id) if selected_profile_id else None
+        form = EditProfileForm(instance=selected_profile)
+
+    return render(request, 'user/edit_profile.html', {'customer': customer, 'profiles': profiles, 'form': form})
+
+
+def edit_kid_profile(request, customer_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    
+    if request.method == 'POST':
+        kid_profile_id = request.POST.get('kid_profile_id')
+        kid_profile = get_object_or_404(KidProfile, id=kid_profile_id)
+        # Handle the form submission and update the kid profile
+        # ...
+
+        # Redirect to the kid profile details page after updating
+        return redirect('kidprofile_details', customer_id=customer.id, kid_profile_id=kid_profile.id)
+
+    kid_profiles = KidProfile.objects.filter(customer=customer)
+    return render(request, 'user/edit_kid_profile.html', {'customer': customer, 'kid_profiles': kid_profiles})

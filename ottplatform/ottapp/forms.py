@@ -41,4 +41,28 @@ class CustomerProfileForm(forms.ModelForm):
             raise forms.ValidationError("PIN and Confirm PIN do not match.")
 
 class PINVerificationForm(forms.Form):
-    pin = forms.CharField(widget=forms.PasswordInput)
+    pin = forms.CharField(widget=forms.PasswordInput, label='')
+
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomerProfile
+        fields = ['profilename', 'pin', 'avatar']
+
+    existing_pin = forms.CharField(max_length=10, required=False, widget=forms.PasswordInput)
+    new_pin = forms.CharField(max_length=10, required=False, widget=forms.PasswordInput)
+    confirm_new_pin = forms.CharField(max_length=10, required=False, widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        existing_pin = cleaned_data.get('existing_pin')
+        new_pin = cleaned_data.get('new_pin')
+        confirm_new_pin = cleaned_data.get('confirm_new_pin')
+
+        # Add your custom validation logic here if needed
+
+        if new_pin and new_pin != confirm_new_pin:
+            raise forms.ValidationError("New PIN and Confirm New PIN must match.")
+
+        return cleaned_data

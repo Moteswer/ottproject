@@ -14,7 +14,7 @@ class movie(models.Model):
     Duration = models.CharField(max_length=50,default='')
     Genre= models.CharField(max_length=100,default='')
     Director=models.CharField(max_length=100,default='')
-    year = models.PositiveIntegerField()
+    year = models.CharField(max_length=100)
     desc = models.TextField(default='')  # Set default value to an empty string
     link = models.URLField(default='')
     rating = models.FloatField()
@@ -160,10 +160,16 @@ class CustomerProfile(models.Model):
     pin = models.CharField(max_length=4)  
     avatar = models.ImageField(upload_to='media/')
 
+    def __str__(self):
+        return self.profilename
+
 class KidProfile(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='kid_profiles')
     profilename = models.CharField(max_length=50)
     avatar = models.ImageField(upload_to='media/')
+
+    def __str__(self):
+        return self.profilename
 
 class moviekid(models.Model):
     kid_profile = models.ForeignKey(KidProfile, on_delete=models.CASCADE, related_name='movies')
