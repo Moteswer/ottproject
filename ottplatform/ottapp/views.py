@@ -280,43 +280,19 @@ def kidmovie_list(request):
 
     return render(request, 'hellokids.html', {'kid': kid})
 
-def edit_go(request):
-    render(request,'user/edit_profile.html')
 
-def edit_profile(request, customer_id):
-    customer = get_object_or_404(Customer, id=customer_id)
-    profiles = CustomerProfile.objects.filter(customer=customer)
 
+def edit_profile(request):
     if request.method == 'POST':
-        profile_id = request.POST.get('profile_id')
-        profile = get_object_or_404(CustomerProfile, id=profile_id)
-
-        form = EditProfileForm(request.POST, request.FILES, instance=profile)
-
+        form = EditProfileForm(request.POST, request.FILES)
         if form.is_valid():
-            # Save the form data
-            form.save()
-            return redirect('profile_list', customer_id=customer.id)
+            profile_name = form.cleaned_data['profile_name']
+            profile = CustomerProfile.objects.get(profile_name=profile_name)
+            form = EditProfileForm(request.POST, request.FILES, instance=profile)
+            if form.is_valid():
+                form.save()
+                return redirect('profile_list')  # Replace with your actual profile list view name
     else:
-        # Get the selected profile (if any) and set it as the initial instance for the form
-        selected_profile_id = request.POST.get('profile_id')
-        selected_profile = get_object_or_404(CustomerProfile, id=selected_profile_id) if selected_profile_id else None
-        form = EditProfileForm(instance=selected_profile)
+        form = EditProfileForm()
 
-    return render(request, 'user/edit_profile.html', {'customer': customer, 'profiles': profiles, 'form': form})
-
-
-def edit_kid_profile(request, customer_id):
-    customer = get_object_or_404(Customer, id=customer_id)
-    
-    if request.method == 'POST':
-        kid_profile_id = request.POST.get('kid_profile_id')
-        kid_profile = get_object_or_404(KidProfile, id=kid_profile_id)
-        # Handle the form submission and update the kid profile
-        # ...
-
-        # Redirect to the kid profile details page after updating
-        return redirect('kidprofile_details', customer_id=customer.id, kid_profile_id=kid_profile.id)
-
-    kid_profiles = KidProfile.objects.filter(customer=customer)
-    return render(request, 'user/edit_kid_profile.html', {'customer': customer, 'kid_profiles': kid_profiles})
+    return render(request, 'edit_profile.html', {'form': form})

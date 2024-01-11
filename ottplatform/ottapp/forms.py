@@ -47,22 +47,9 @@ class PINVerificationForm(forms.Form):
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = CustomerProfile
-        fields = ['profilename', 'pin', 'avatar']
+        fields = ['profile_name', 'pin', 'avatar']
 
-    existing_pin = forms.CharField(max_length=10, required=False, widget=forms.PasswordInput)
-    new_pin = forms.CharField(max_length=10, required=False, widget=forms.PasswordInput)
-    confirm_new_pin = forms.CharField(max_length=10, required=False, widget=forms.PasswordInput)
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        existing_pin = cleaned_data.get('existing_pin')
-        new_pin = cleaned_data.get('new_pin')
-        confirm_new_pin = cleaned_data.get('confirm_new_pin')
-
-        # Add your custom validation logic here if needed
-
-        if new_pin and new_pin != confirm_new_pin:
-            raise forms.ValidationError("New PIN and Confirm New PIN must match.")
-
-        return cleaned_data
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Customize the queryset to fetch profile names dynamically
+        self.fields['profile_name'].queryset = CustomerProfile.objects.values_list('profile_name', flat=True).distinct()

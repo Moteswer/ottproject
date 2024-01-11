@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import MovieKidDetail, MovieListView, Moviedetail, ProfileDetailView, edit_go, edit_kid_profile, edit_profile, kidmovie_list,kidprofile_details, home_view, kid_profile_registration_view, list_profiles, movie_list, profile_details, profile_registration_view, register_customer,login_view,KidMovieListView, upcoming_movies
+from .views import MovieKidDetail, MovieListView, Moviedetail, ProfileDetailView, edit_profile,  kidmovie_list,kidprofile_details, home_view, kid_profile_registration_view, list_profiles, movie_list, profile_details, profile_registration_view, register_customer,login_view,KidMovieListView, upcoming_movies
 
 urlpatterns = [
     path('', home_view, name='home'),
@@ -19,7 +19,6 @@ urlpatterns = [
     path('upcoming_movies/<int:movie_id>/', upcoming_movies, name='upcoming_movies'),
     path('movies/',movie_list,name='movie_list'),
     path('kidmovies/',kidmovie_list,name='kidmovie_list'),
-    path('edit_profile/<int:customer_id>/', edit_profile, name='edit_profile'),
-    path('edit_kid_profile/<int:customer_id>/', edit_kid_profile, name='edit_kid_profile'),
-    path('edit/',edit_go,name='edit_go')
+     path('edit_profile/<int:customer_id>/<int:profile_id>/', edit_profile, name='edit_profile'),
+  
 ]

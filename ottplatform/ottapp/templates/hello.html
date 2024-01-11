@@ -7,6 +7,7 @@
     <title>Netflix Clone</title>
     <style>
         body {
+            align-items: center;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
@@ -15,6 +16,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+
         }
         
         .header {
@@ -46,37 +48,37 @@
         }
         
         .movie-card {
-    width: 200px;
-    text-align: center;
-    flex-shrink: 0;
-    position: relative; /* Add position:relative for absolute positioning */
-    overflow: hidden; /* Hide overflow to prevent box-shadow from being cut off */
-}
+            width: 200px;
+            text-align: center;
+            flex-shrink: 0;
+            position: relative; /* Add position:relative for absolute positioning */
+            overflow: hidden; /* Hide overflow to prevent box-shadow from being cut off */
+                }
 
-.movie-card img {
-    width: 100%;
-    height: 70%;
-    object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 100%;
-    transition: transform 0.3s ease-in-out; /* Add transition for smooth hover effect */
-}
+        .movie-card img {
+            width: 100%;
+            height: 70%;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            transition: transform 0.3s ease-in-out; /* Add transition for smooth hover effect */
+        }
 
-.movie-card:hover img {
-    transform: scale(1.1); /* Scale the image on hover */
-}
+        .movie-card:hover img {
+            transform: scale(1.1); /* Scale the image on hover */
+        }
 
-.movie-card h2 {
-    margin-top: 10px;
-    font-size: 16px;
-    text-align: center;
-    transition: color 0.3s ease-in-out; /* Add transition for smooth hover effect */
-}
+        .movie-card h2 {
+            margin-top: 10px;
+            font-size: 16px;
+            text-align: center;
+            transition: color 0.3s ease-in-out; /* Add transition for smooth hover effect */
+        }
 
-.movie-card:hover h2 {
-    color: #e50914; /* Change text color on hover */
-}
+        .movie-card:hover h2 {
+            color: #e50914; /* Change text color on hover */
+        }
         footer {
             text-align: center;
             padding: 20px;
@@ -96,10 +98,25 @@
         .movie-list::-webkit-scrollbar-track {
             background-color: #111; /* Set to the same color as your webpage background */
         }
+        #search {
+            
+            margin-top: 20px; /* Adjust the margin as needed */
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333; /* Netflix search bar background color */
+            color: white;
+            outline: none;
+        }
+        #movie-list-container {
+            margin-top: 20px; /* Adjust the margin as needed */
+        }
         
 
         
-    </style>
+</style>
     
 </head>
 <body>

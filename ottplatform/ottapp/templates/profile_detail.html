@@ -106,13 +106,14 @@
   <button type="submit">Create an Adult Profile</button>
 </form>
 
-<a href="{% url 'edit_profile' customer.id %}"><button>Edit Profile</button></a>
+<button>Edit Profile</button>
 
 
 <form method="post" action="{% url 'kid_profile_registration' customer.id %}" enctype="multipart/form-data">
   {% csrf_token %}
   <button type="submit">Create a Kid Profile</button>
 </form>
+
 
 </body>
 </html>
