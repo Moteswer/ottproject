@@ -1,7 +1,77 @@
-<!-- Update the template to handle kid profiles -->
-<form method="post" action="{% url 'kid_profile_registration' customer.id %}" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ profile_form.as_p }}
-  <input type="submit" value="Save Profiles">
-  <div id="error-message" style="color: red;"></div>
-</form>
+<!-- kid_profile_registration.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kid Profile Registration</title>
+    <style>
+        /* Custom CSS styles (reuse styles from profile_registration.html) */
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: url('/media/media/netflix-background-gs7hjuwvv2g0e9fj.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .update-profile-container {
+            text-align: center;
+            margin-top: 50px; /* Adjust as needed */
+        }
+
+        .update-profile-form {
+            background-color: rgba(0, 0, 0, 0.5); /* Adjust the transparency here */
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .form-field {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .current-value {
+            color: #888;
+            margin-left: 10px;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        button {
+            background-color: #e50914;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff7f00;
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="{% url 'kid_profile_registration' customer.id %}" enctype="multipart/form-data" class="update-profile-form">
+        {% csrf_token %}
+        {{ profile_form.as_p }}
+        <input type="submit" value="Save Profiles">
+        <div id="error-message" style="color: red;"></div>
+    </form>
+</body>
+</html>

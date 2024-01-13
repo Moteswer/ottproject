@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Customer, CustomerProfile, CustomerProfileImage, waste
+from .models import Customer, CustomerProfile, CustomerProfileImage, SubscribedUser, random, upcomingkid, waste
 from django.contrib import admin
 from.models import movie
 from.models import newmovie
@@ -54,14 +54,15 @@ class CustomerAdmin(admin.ModelAdmin):
 admin.site.register(CustomerProfileImage)    
 admin.site.register(upcoming,UpcomingAdmin)   
 admin.site.register(movie,MoviesAdmin) 
-admin.site.register(series,SeriesAdmin)
-admin.site.register(chromovies,ChromoviesAdmin)
-admin.site.register(newlatest,NewlatestAdmin)
-admin.site.register(newmovie,NewmovieAdmin)
-admin.site.register(newseries,NewseriesAdmin)
 admin.site.register(newupcoming,NewupcomingAdmin)
-admin.site.register(newchromovies,NewchromoviesAdmin)
 admin.site.register(moviekid)
 admin.site.register(waste)
+admin.site.register(random)
+admin.site.register(upcomingkid)
+
+@admin.register(SubscribedUser)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('customer_name','subscription_date')  # Customize the fields you want to display
+    # Add other configurations as needed
 
 

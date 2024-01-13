@@ -2,6 +2,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Add necessary meta tags, title, and link to Font Awesome (if not already included) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.name }} - Movie Detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -30,6 +35,55 @@
             border-radius: 8px;
         }
 
+        .trailer {
+            text-align: center;
+            margin-top: 20px; /* Add margin to create space between video and rating */
+        }
+
+        .rating-form {
+            margin-top: 15px;
+            text-align: center;
+        }
+    
+        label[for="rating"] {
+            display: block;
+            margin-bottom: 10px;
+            color: #ddd;
+            font-size: 18px;
+        }
+    
+        .rating {
+            display: inline-block;
+            font-size: 0; /* Remove inline-block gap */
+        }
+    
+        .rating i {
+            font-size: 2em;
+            color: #f7d417; /* Yellow color */
+            cursor: pointer;
+            transition: color 0.3s ease-in-out;
+        }
+    
+        .rating i:hover,
+        .rating i.selected {
+            color: Yellow; /* Netflix red color on hover/selected */
+        }
+    
+        button.submit-rating {
+            background-color: #e50914; /* Netflix red color */
+            color: #fff;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+    
+        button.submit-rating:hover {
+            background-color: #c70000; /* Darker shade on hover */
+        }
+
         footer {
             text-align: center;
             padding: 10px;
@@ -39,14 +93,13 @@
             bottom: 0;
             width: 100%;
         }
-        .trailer{
-            text-align: center;
-        }
+
+        /* Other existing styles remain unchanged */
+
     </style>
 </head>
 
 <body>
-
 
 <div class="main-content">
     <h1>{{ movie.name }}</h1>
@@ -63,7 +116,58 @@
     <iframe width="560" height="315" src="{{ movie.link }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 </div>
 
+<!-- Rating Form -->
+<div class="rating-form">
+    {% csrf_token %}
+    <label for="rating">Rate this movie:</label>
+    <!-- Star ratings -->
+    <i class="far fa-star" data-value="1"></i>
+    <i class="far fa-star" data-value="2"></i>
+    <i class="far fa-star" data-value="3"></i>
+    <i class="far fa-star" data-value="4"></i>
+    <i class="far fa-star" data-value="5"></i>
+    <button type="button" class="submit-rating">Submit Rating</button>
+</div>
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Handle star click for rating
+        $('.rating-form i').on('click', function () {
+            var $star = $(this);
+            var $rating = $star.closest('.rating-form');
 
+            // Set stars to 'selected' up to the clicked star
+            $star.addClass('fas').removeClass('far');
+            $star.prevAll('i').addClass('fas').removeClass('far');
+            $star.nextAll('i').removeClass('fas').addClass('far');
+        });
+
+        // Handle click on 'Submit Rating' button
+        $('.submit-rating').on('click', function () {
+            var $ratingForm = $(this).closest('.rating-form');
+            var rating = $ratingForm.find('.fas').length; // Count filled stars
+
+            // AJAX call to submit rating
+            $.ajax({
+                url: "#", // URL to Django view that handles rating submission
+                type: 'POST',
+                data: {
+                    'movie_id': '{{ movie.id }}', // Add movie ID
+                    'rating': rating,
+                    'csrfmiddlewaretoken': $ratingForm.find('[name="csrfmiddlewaretoken"]').val()
+                },
+                success: function (response) {
+                    // Handle success - maybe alert the user or update the page
+                    alert('Rating submitted!');
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    alert('Rating submitted successfully!!');
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

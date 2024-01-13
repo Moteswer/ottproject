@@ -178,6 +178,7 @@ class moviekid(models.Model):
     genre = models.CharField(max_length=50)
     description = models.TextField()
     poster = models.ImageField(upload_to='media/')
+    link = models.URLField(default='')
 
     def __str__(self):
         return self.title
@@ -198,4 +199,40 @@ class upcoming(models.Model):
 
     def __str__(self):
         return self.name
+    
+class PlanDetails(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+class SubscribedUser(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer_name = models.CharField(max_length=255)  # Add a field for customer's name
+    plan = models.ForeignKey(PlanDetails, on_delete=models.CASCADE)
+    subscription_date = models.DateTimeField(auto_now_add=True)
+
+
+class random(models.Model):
+    name = models.CharField(max_length=50)
+    Duration = models.CharField(max_length=50,default='')
+    Genre= models.CharField(max_length=100,default='')
+    Director=models.CharField(max_length=100,default='')
+    year = models.PositiveIntegerField()
+    desc = models.TextField(default='')  # Set default value to an empty string
+    link = models.URLField(default='')
+    image = models.ImageField(upload_to='media/', default='')
+
+    def __str__(self):
+        return self.name
+    
+
+class upcomingkid(models.Model):
+    name = models.CharField(max_length=50)
+    Duration = models.CharField(max_length=50,default='')
+    Genre= models.CharField(max_length=100,default='')
+    Director=models.CharField(max_length=100,default='')
+    year = models.PositiveIntegerField()
+    desc = models.TextField(default='')  # Set default value to an empty string
+    link = models.URLField(default='')
+    image = models.ImageField(upload_to='media/', default='')
     

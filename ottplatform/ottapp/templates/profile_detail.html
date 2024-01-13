@@ -13,18 +13,30 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: url('/media/media/netflix-codes.webpnetflix-codes.webpt') no-repeat center center fixed;
+            background: url('/media/media/neon.gif') no-repeat center center fixed;
             background-size: cover;
-            color: #fff;
+            color: #000000;
             margin: 0;
             padding: 0;
+            backdrop-filter: blur(5px);
         }
 
+        h1 {
+              font-family: 'Pacifico', cursive; /* Choose a decorative font-family */
+              color: #ffffff; /* Set the text color */
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle text shadow */
+              margin-bottom: 20px; /* Adjust the margin to your preference */
+}
+
+
         h1, h2, p {
+            color:white;
             margin: 10px 0;
         }
 
         .profile-box {
+            max-height: 100%;
+            align-items: center;
             display: inline-block;
             width: 200px;
             margin: 10px;
@@ -43,7 +55,7 @@
         .profile-box img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            
             border-radius: 8px;
         }
 
@@ -59,7 +71,7 @@
         }
 
         button {
-            background-color: #e50914;
+            background-color: #01600a;
             color: #fff;
             padding: 10px;
             border: none;
@@ -69,7 +81,7 @@
         }
 
         button:hover {
-            background-color: #ff7f00;
+            background-color: #2e9639;
         }
 
         .gear-icon {
@@ -98,6 +110,7 @@
         .popup p {
             color: black;
         }
+      
     </style>
 </head>
 <body>
@@ -116,28 +129,35 @@
     </div>
 
     <h1>WELCOME {{ customer.firstname|upper }}</h1>
+    <br>
+    <br>
 
     <h2>Profile Details</h2>
-    {% if profile %}
-        {% for i in profile %}
-            <div class="profile-box">
-                <a href="{% url 'profile_details' customer.id i.id %}">
-                    <img src="{{ i.avatar.url}}" alt="Avatar">
-                    <p>Profile Name: {{ i.profilename }}</p>
+{% if profile %}
+    {% for i in profile %}
+        <div class="profile-box">
+            <a href="{% url 'profile_details' customer.id i.id %}">
+                <img src="{{ i.avatar.url}}" alt="Avatar">
+                <p>Profile Name: {{ i.profilename }}</p>
 
-                    <form method="post" action="{% url 'update_profile' customer.id i.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Update</button>
-                    </form>
+                <form method="post" action="{% url 'update_profile' customer.id i.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Update</button>
+                </form>
 
-                    <form method="post" action="{% url 'delete_profile' customer.id i.id %}" onclick="confirmDelete('{{ i.profilename }}')">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </a>
-            </div>
-        {% endfor %}
-    {% endif %}
+                <form method="post" action="{% url 'delete_profile' customer.id i.id %}" onclick="confirmDelete('{{ i.profilename }}')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+
+                
+            </a>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Add a button to create a profile -->
+
 
     <h2>Kid Profile Details</h2>
     {% if kid_profiles %}
@@ -145,7 +165,7 @@
             <div class="profile-box">
                 <a href="{% url 'kidprofile_details' customer.id i.id %}">
                     <img src="{{ i.avatar.url }}" alt="Avatar">
-                    <p>Profile Name: {{ i.name }}</p>
+                    <p>Profile Name: {{ i.profilename }}</p>
 
                     <form method="post" action="{% url 'update_kid_profile' customer.id i.id %}">
                         {% csrf_token %}
@@ -164,17 +184,26 @@
     <br>
     <br>
 
-    <!-- Add a button to create a profile -->
+
     <form method="post" action="{% url 'profile_registration' customer.id %}" enctype="multipart/form-data">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-success">Create an Adult Profile</button>
+      {% csrf_token %}
+      <button type="submit" class="addbutton" >Create Profile</button>
     </form>
 
-    <button class="btn btn-primary">Edit Profile</button>
+    <!-- Add a button to create a profile -->
+  
+
+    
 
     <form method="post" action="{% url 'kid_profile_registration' customer.id %}" enctype="multipart/form-data">
         {% csrf_token %}
-        <button type="submit" class="btn btn-warning">Create a Kid Profile</button>
+        <button type="submit" class="btn btn-warning">Create Kid Profile</button>
+    </form>
+
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Logout</button>
     </form>
 
     <script>

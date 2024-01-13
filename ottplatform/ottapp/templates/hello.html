@@ -4,7 +4,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netflix Clone</title>
+    <title>OTT PLATFORM</title>
     <style>
         body {
             align-items: center;
@@ -37,7 +37,7 @@
         }
         
         h1 {
-            color: #e50914;
+            color: white;
         }
         
         .movie-list {
@@ -127,7 +127,7 @@
 </div>
 
 <div class="main-content">
-    <h1>Recommended Movies</h1>
+    <h1>All Movies</h1>
     <div class="movie-list">
         {% for movie in movies %}
         <div class="movie-card">
@@ -161,7 +161,26 @@
     </div>
 </div>
 
+
+<div class="main-content">
+    <h1>Random  Movies</h1>
+    <div class="movie-list">
+        {% for i  in ran %}
+        <div class="movie-card">
+            <a href="{% url 'upcoming_movies' i.id %}">
+                <img src="{{ i.image.url }}" alt="{{ i.name }}">
+            </a>
+          
+            <h2>{{ i.name }}</h2>
+            <p>Duration: {{ i.Duration }}</p>
+            <p>Year: {{ i.year }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
 </body>
+<!-- Add data attributes to script tag -->
 <script>
     var baseUrl = "{% url 'movie_list' %}";
     var isSearchActive = false;
@@ -198,4 +217,7 @@
         });
     });
 </script>
+</body>
+</html>
+
 </html>

@@ -4,7 +4,7 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netflix Clone</title>
+    <title>Netflix </title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -124,8 +124,27 @@
     </div>
 </div>
 
+<div class="main-content">
+    <h1>All Movies</h1>
+    <div class="movie-list">
+        {% for i in kids %}
+            <div class="movie-card">
+                <img src="{{ i.image.url }}" alt="{{ i.name }}">
+                <h3>{{ i.name }}</h3>
+                <p>Duration: {{ i.Duration }}</p>
+                <p>Genre: {{ i.Genre }}</p>
+                <p>Director: {{ i.Director }}</p>
+                <p>Year: {{ i.year }}</p>
+                <p>Description: {{ i.desc }}</p>
+                <p>Link: <a href="{{ i.link }}" target="_blank">{{ i.link }}</a></p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
 <footer>
-    <p>&copy; 2024 Netflix Clone</p>
+    <p>&copy; 2024 Netflix </p>
 </footer>
 
 </body>

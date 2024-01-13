@@ -1,0 +1,53 @@
+<!-- subscription_success.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Successful</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        h2 {
+            color: #e50914;  /* Netflix red color */
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        a.btn-primary {
+            background-color: #e50914;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        a.btn-primary:hover {
+            background-color: #ff0000;  /* Darker red on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Subscription Successful</h2>
+        <p>Congratulations, {{ subscribed_user.customer_name }}! You are now subscribed to {{ subscribed_user.plan.name }}.</p>
+        <a href="{% url 'go_to_login' %}" class="btn btn-primary">Go to Login</a>
+    </div>
+</body>
+</html>

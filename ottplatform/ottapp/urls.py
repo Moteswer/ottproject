@@ -1,11 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import  MovieKidDetail, MovieListView, Moviedetail, ProfileDetailView, delete_kid_profile, delete_profile,  kidmovie_list,kidprofile_details, home_view, kid_profile_registration_view, list_profiles, movie_list, profile_details, profile_registration_view, register_customer,login_view,KidMovieListView, upcoming_movies, update_kid_profile, update_profile
+from .views import  MovieKidDetail, MovieListView, Moviedetail, ProfileDetailView, Random, admin_dashboard, admin_login_view, all_movies, delete_kid_profile, delete_profile, go_back, go_to_login,  kidmovie_list,kidprofile_details, home_view, kid_profile_registration_view, list_profiles, logout_view, movie_list, profile_details, profile_registration_view, random_details, register_customer,login_view,KidMovieListView, select_subscription_plan, upcoming_movies, update_kid_profile, update_profile
 
 urlpatterns = [
-    path('', home_view, name='home'),
-    path('register/', register_customer, name='register_customer'),
-    path('login/', login_view, name='login'),
+    path('home/', home_view, name='home'),
+    path('register', register_customer, name='register_customer'),
+    path('', login_view, name='login'),
+    path('admin-login/', admin_login_view, name='admin_login'),
+    path('admin/', admin_dashboard, name='admin_dashboard'),
     path('list_profiles/<int:customer_id>/', list_profiles, name='list_profiles'),
     path('profile/<int:customer_id>/', profile_registration_view, name='profile_registration'),
     path('profile/detail/<int:customer_id>/', ProfileDetailView.as_view(), name='profile_detail'),
@@ -23,6 +25,13 @@ urlpatterns = [
     path('delete_profile/<int:customer_id>/<int:profile_id>/', delete_profile, name='delete_profile'),
     path('update_kid_profile/<int:customer_id>/<int:kid_profile_id>/', update_kid_profile, name='update_kid_profile'),
     path('delete_kid_profile/<int:customer_id>/<int:kid_profile_id>/', delete_kid_profile, name='delete_kid_profile'),
+    path('logout/', logout_view, name='logout'),
+    path('select-subscription-plan/<int:customer_id>/', select_subscription_plan, name='select_subscription_plan'),
+    path('go-to-login/', go_to_login, name='go_to_login'),
+    path('go_back/',go_back,name = 'go_back'),
+    path('random_movies/<int:id>/',Random.as_view() , name='random_movies'),
+    path('random_details/',random_details,name='random_details'),
+    path('all_movies/', all_movies, name='all_movies'),
 
   
 ]

@@ -87,8 +87,8 @@
     <div class="details-container">
         <div>
             <img src="{{ moviekid.poster.url }}" alt="{{ moviekid.title }}">
-            <div>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/RqrXhwS33yc?si=iOyKa485eacw3AIX" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <div class="trailer">
+                <iframe width="560" height="315" src="{{ moviekid.link }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
             <p>Synopsis: {{ moviekid.description }}</p>
             <p>Genre: {{ moviekid.genre }}</p>
@@ -98,9 +98,7 @@
     </div>
 </div>
 
-<footer>
-    <p>&copy; 2024 Netflix Clone</p>
-</footer>
+
 
 </body>
 </html>

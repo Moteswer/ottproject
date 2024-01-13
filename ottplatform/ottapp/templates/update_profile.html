@@ -12,6 +12,7 @@
     <style>
         /* Custom CSS styles */
         body {
+            
             margin: 0;
             overflow: hidden;
             background: url('/media/media/netflix-background-gs7hjuwvv2g0e9fj.jpg') no-repeat center center fixed;
@@ -34,6 +35,7 @@
         }
 
         .form-field {
+            
             margin-bottom: 15px;
         }
 
@@ -70,13 +72,13 @@
     <div class="container-fluid update-profile-container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="update-profile-form">
+                <div class="update-profile-form text-center">
                     <h2 class="mb-4">Update Profile</h2>
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 
                         <div class="form-field">
-                            <label for="{{ form.profilename.id_for_label }}">Profilename:</label>
+                            <label for="{{ form.profilename.id_for_label }}" class="text-center">Profilename:</label>
                             {{ form.profilename }}
                             <span class="current-value">(Currently: {{ profile.profilename }})</span>
                             {% if form.profilename.errors %}
@@ -85,7 +87,7 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="{{ form.pin.id_for_label }}">Pin:</label>
+                            <label for="{{ form.pin.id_for_label }}" class="text-center">Pin:</label>
                             {{ form.pin }}
                             {% if form.pin.errors %}
                                 <span class="error-message">{{ form.pin.errors }}</span>
@@ -93,7 +95,7 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="{{ form.avatar.id_for_label }}">Avatar:</label>
+                            <label for="{{ form.avatar.id_for_label }}" class="text-center">Avatar:</label>
                             <br>
                             {{ form.avatar }}
                             {% if form.avatar.errors %}
@@ -107,7 +109,7 @@
             </div>
         </div>
     </div>
-    {% endblock %}
+{% endblock %}
 
     <!-- Bootstrap JS and Popper.js CDN (required for Bootstrap) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
