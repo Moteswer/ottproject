@@ -25,19 +25,7 @@ class Migration(migrations.Migration):
                 ('image4', models.CharField(max_length=500)),
             ],
         ),
-        migrations.CreateModel(
-            name='movie',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('year', models.PositiveIntegerField()),
-                ('rating', models.FloatField()),
-                ('image1', models.CharField(max_length=500)),
-                ('image2', models.CharField(max_length=500)),
-                ('image3', models.CharField(max_length=500)),
-                ('image4', models.CharField(max_length=500)),
-            ],
-        ),
+   
         migrations.CreateModel(
             name='newchromovies',
             fields=[

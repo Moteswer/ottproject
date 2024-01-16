@@ -1,18 +1,23 @@
 # views.py
 from django.shortcuts import get_object_or_404, render, redirect
-from .forms import CustomerRegistrationForm, PINVerificationForm
+from .forms import  CustomerRegistrationForm, EditProfileForm,PINVerificationForm 
 # ottapp/views.py
+from django.template.loader import render_to_string
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponse, JsonResponse
-from .models import Customer, CustomerProfile, movie
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from .models import Customer, CustomerProfile, PlanDetails, SubscribedUser, moviekid, random, upcoming, upcomingkid, waste
 from .forms import LoginForm
+from django.views.generic import ListView
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Customer, CustomerProfile, KidProfile
+from .models import Customer, CustomerProfile, KidProfile,movie
 from .forms import CustomerProfileForm, KidProfileForm
+from django.urls import reverse
+from django.contrib.auth import logout
 
 def login_view(request):
     form = LoginForm()
@@ -35,7 +40,20 @@ def login_view(request):
                 form.add_error(None, 'User not found')
 
     return render(request, 'user/login.html', {'form': form})
+    
+def admin_login_view(request):
+    if request.method == 'POST':
+        entered_code = request.POST.get('admin_code', '')
+        if entered_code == '9999':
+            # Code is correct, redirect to admin dashboard
+            return redirect('admin_dashboard')
 
+    # If the code is incorrect or it's a GET request, render the login page
+    return render(request, 'admin_login.html')
+
+def admin_dashboard(request):
+    # Your admin dashboard logic here
+    return render(request, 'admin_dashboard.html')
 
 
 
@@ -44,14 +62,27 @@ def login_view(request):
 def home_view(request):
     return render(request, 'home.html')
 
-
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from .forms import CustomerRegistrationForm  # Import your form
 
 def register_customer(request):
     if request.method == 'POST':
         form = CustomerRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('home')  # Redirect to a success page 
+            customer = form.save()
+
+            # Send registration success email
+            subject = 'Registration Successful'
+            message = f'Thank you for registering on My Website, {customer.email}!'
+            from_email = 'moteswer@gmail.com'  # Replace with your email
+            recipient_list = [customer.email]
+
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+            # Redirect to plan selection page
+            return redirect('select_subscription_plan', customer_id=customer.id)
+
     else:
         form = CustomerRegistrationForm()
 
@@ -135,7 +166,7 @@ def kid_profile_registration_view(request, customer_id):
             kid_profile.save()
 
             # Optionally, return a success message or an empty JSON response
-            return JsonResponse({})
+            return redirect('profile_detail', customer_id=customer.id)
 
     else:
         profile_form = KidProfileForm()
@@ -156,7 +187,8 @@ def profile_details(request, customer_id, profile_id):
 
             if entered_pin == profile.pin:
                 # PIN is correct, redirect to the movie_list function
-                return redirect('movie_list')
+                movie_list_url = reverse('movie_list', args=[profile_id])
+                return redirect(movie_list_url)
             else:
                 # PIN is incorrect, show an error message
                 pin_form.add_error('pin', 'Incorrect PIN. Please try again.')
@@ -170,9 +202,229 @@ def profile_details(request, customer_id, profile_id):
 def kidprofile_details(request, customer_id, profile_id):
     customer = get_object_or_404(Customer, id=customer_id)
     profile = get_object_or_404(KidProfile, id=profile_id, customer=customer)
+    kidmovielist_url = reverse('kidmovielist', args=[profile_id])
+    return redirect(kidmovielist_url)
 
     return render(request, 'hellokids.html', {'customer': customer, 'profile': profile})
 
+class MovieListView(View):
+    template_name = 'hello.html'
+
+    def get(self, request, profile_id):
+        profile = get_object_or_404(CustomerProfile, id=profile_id)
+        customer_movies = movie.objects.filter(customer_profile=profile)
+        logo=waste.objects.all()
+        upmov = upcoming.objects.all()
+        ran = random.objects.all()
+        return render(request, self.template_name, {'movies': customer_movies, 'profile': profile,'logo':logo,'upmov':upmov,'ran':ran})
+    
+class Moviedetail(View):
+    template_name = 'movie_detail.html'
+
+    def get(self, request, id,):
+        # Retrieve the specific movie details
+        movie_instance = get_object_or_404(movie, id=id)
+
+        
+
+        # If you want to retrieve all movies related to a specific profile
+        # you can use a related field, assuming your Movie model has a ForeignKey
+        # field named 'customer_profile'
+        customer_movies = movie.objects.filter(customer_profile=movie_instance.customer_profile)
+
+        return render(request, self.template_name, {'movie': movie_instance, 'customer_movies': customer_movies})
+    
+
+
+class KidMovieListView(ListView):
+    model = moviekid
+    template_name = 'hellokids.html'
+    context_object_name = 'movies'
+
+    def get_queryset(self):
+        kid_profile_id = self.kwargs.get('id')
+        return moviekid.objects.filter(kid_profile_id=kid_profile_id)
+    
+class MovieKidDetail(View):
+    template_name = 'moviekid_detail.html'
+
+    def get(self, request, id):
+        # Retrieve the specific movie kid details
+        moviekid_instance = get_object_or_404(moviekid, id=id)
+
+        # Retrieve all movie kids related to the same customer profile
+        customer_moviekids = moviekid.objects.filter(kid_profile=moviekid_instance.kid_profile_id)
+
+        return render(request, self.template_name, {'moviekid': moviekid_instance, 'customer_moviekids': customer_moviekids})
+   
+
+
+def upcoming_movies(request, movie_id):
+    # Retrieve the movie details from the database
+    movie = get_object_or_404(upcoming, id=movie_id)
+    ran = get_object_or_404(random, id=movie_id)
+
+    # You can add any additional logic or processing here if needed
+
+    # Render the movie detail template with the movie object
+    return render(request, 'upmoviedetail.html', {'movie': movie,'ran':ran})
+
+
 def movie_list(request):
-    movies = movie.objects.all()
-    return render(request, 'hello.html', {'movies': movies})
+    query = request.GET.get('q', '')
+    move = movie.objects.all()
+
+    if query:
+        # Filter movies for each field individually using icontains for partial matching
+        move = move.filter(
+            Q(name__icontains=query) |
+            Q(Genre__icontains=query) |
+            Q(Director__icontains=query) |
+            Q(year__icontains=query)
+        ).distinct()
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('partials/_movie_list.html', {'move': move})
+        return JsonResponse({'html': html})
+
+    return render(request, 'hello.html', {'move': move})
+
+
+def kidmovie_list(request):
+    query = request.GET.get('q', '')
+    kid = moviekid.objects.all()
+
+    if query:
+
+        # Check if the query represents a number (year)
+        # Filter movies for each field individually
+        kid = kid.filter(
+                Q(title__icontains=query) |
+                Q(genre__icontains=query)
+            ).distinct()
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('partials/kidmovie_list.html', {'kid': kid})
+        return JsonResponse({'html': html})
+
+    return render(request, 'hellokids.html', {'kid': kid})
+
+
+def update_profile(request, customer_id, profile_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    profile = get_object_or_404(CustomerProfile, id=profile_id)
+
+    form = EditProfileForm(request.POST or None, request.FILES or None, instance=profile)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('profile_detail', customer_id=customer.id)
+
+    return render(request, 'update_profile.html', {'customer': customer, 'profile': profile, 'form': form})
+
+
+# views.py
+
+
+def delete_profile(request, customer_id, profile_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    profile = get_object_or_404(CustomerProfile, id=profile_id)
+
+    if request.method == 'POST':
+        profile.delete()
+        return redirect('profile_detail', customer_id=customer.id)
+
+    return render(request, 'delete_profile.html', {'customer': customer, 'profile': profile})
+
+# views.py
+from django.shortcuts import get_object_or_404, redirect
+from .models import KidProfile
+
+def delete_kid_profile(request, customer_id, kid_profile_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    kid_profile = get_object_or_404(KidProfile, id=kid_profile_id)
+
+    if request.method == 'POST':
+        kid_profile.delete()
+        return redirect('profile_detail', customer_id=customer.id)
+
+    return render(request, 'delete_kid_profile.html', {'customer': customer, 'kid_profile': kid_profile})
+
+
+
+def update_kid_profile(request, customer_id, kid_profile_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    kid_profile = get_object_or_404(KidProfile, id=kid_profile_id)
+
+    if request.method == 'POST':
+        form = KidProfileForm(request.POST, request.FILES, instance=kid_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile_detail', customer_id=customer.id)
+    else:
+        form = KidProfileForm(instance=kid_profile)
+
+    return render(request, 'update_kid_profile.html', {'customer': customer, 'kid_profile': kid_profile, 'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+def select_subscription_plan(request, customer_id):
+    customer = Customer.objects.get(id=customer_id)
+
+    if request.method == 'POST':
+        selected_plan_id = request.POST.get('selected_plan')
+        selected_plan = PlanDetails.objects.get(id=selected_plan_id)
+
+        # Create a SubscribedUser record
+        subscribed_user = SubscribedUser.objects.create(
+            customer=customer,
+            customer_name=customer.email,  # Use the appropriate field from your Customer model
+            plan=selected_plan,
+        )
+
+        return render(request, 'subscription_success.html', {'subscribed_user': subscribed_user})
+
+    else:
+        available_plans = PlanDetails.objects.all()
+
+    return render(request, 'select_subscription_plan.html', {'customer': customer, 'available_plans': available_plans})
+
+
+def go_to_login(request):
+    return redirect(reverse('login'))
+
+
+def go_back(request):
+    return redirect(reverse('profile_detail'))
+
+
+
+
+class Random(View):
+    template_name = 'hello.html'
+
+    def get(self, request, profile_id):
+        profile = get_object_or_404(CustomerProfile, id=profile_id)
+        customer_movies = random.objects.filter(customer_profile=profile)
+        ran = random.objects.all()
+
+        return render(request, self.template_name, {'movies': customer_movies, 'profile': profile, 'logo': logo, 'ran': ran})
+
+
+def random_details(request,id):
+    # Retrieve all movies from the 'random' table
+    movies = random.objects.all(id=id)
+
+    # You can add any additional logic or processing here if needed
+
+    # Render the movie detail template with the movie objects
+    return render(request, 'upmoviedetail.html', {'movies': movies})
+
+
+def all_movies(request):
+    kids = upcomingkid.objects.all()
+    return render(request, 'your_template_name.html', {'movies': kids})

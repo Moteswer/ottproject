@@ -1,4 +1,5 @@
 # forms.py
+from datetime import date
 from django import forms
 from .models import Customer
 from .models import CustomerProfile, KidProfile
@@ -11,13 +12,59 @@ class KidProfileForm(forms.ModelForm):
 
 
 class CustomerRegistrationForm(forms.ModelForm):
+    confirm_password = forms.CharField(widget=forms.PasswordInput(), label='Confirm Password')
+
     class Meta:
         model = Customer
-        fields = ['firstname', 'lastname', 'email', 'username', 'password', 'DoB', 'phonenumber']
+        fields = ['firstname', 'lastname', 'email', 'username', 'password', 'confirm_password', 'DoB', 'phonenumber']
+
         widgets = {
-            'password': forms.PasswordInput(),
             'DoB': forms.DateInput(attrs={'type': 'date'}),
+            'password': forms.PasswordInput(render_value=True),
         }
+
+    def clean_firstname(self):
+        firstname = self.cleaned_data['firstname']
+        if any(char.isdigit() for char in firstname):
+            raise forms.ValidationError('First name should not contain numbers.')
+        return firstname
+
+    def clean_lastname(self):
+        lastname = self.cleaned_data['lastname']
+        if any(char.isdigit() for char in lastname):
+            raise forms.ValidationError('Last name should not contain numbers.')
+        return lastname
+
+    def clean_DoB(self):
+        dob = self.cleaned_data['DoB']
+        today = date.today()
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+
+        if age < 12:
+            raise forms.ValidationError('You must be 12 years or older to register.')
+
+        return dob
+
+    def clean_phonenumber(self):
+        phonenumber = self.cleaned_data['phonenumber']
+
+        # Remove non-digit characters from the phone number
+        cleaned_phonenumber = ''.join(filter(str.isdigit, str(phonenumber)))
+
+        if len(cleaned_phonenumber) != 10:
+            raise forms.ValidationError('Phone number must be 10 digits.')
+
+        return cleaned_phonenumber
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+
+        if password and confirm_password and password != confirm_password:
+            raise forms.ValidationError("Password and Confirm Password must match.")
+
+        return cleaned_data
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
@@ -32,6 +79,14 @@ class CustomerProfileForm(forms.ModelForm):
         model = CustomerProfile
         fields = ['profilename', 'pin', 'confirm_pin', 'avatar']
 
+    def clean_pin(self):
+        pin = self.cleaned_data.get('pin')
+
+        if not pin or not pin.isdigit() or len(pin) != 4:
+            raise forms.ValidationError("PIN must be a 4-digit number.")
+
+        return pin
+
     def clean(self):
         cleaned_data = super().clean()
         pin = cleaned_data.get('pin')
@@ -41,4 +96,26 @@ class CustomerProfileForm(forms.ModelForm):
             raise forms.ValidationError("PIN and Confirm PIN do not match.")
 
 class PINVerificationForm(forms.Form):
+    pin = forms.CharField(widget=forms.PasswordInput, label='')
+
+
+class EditProfileForm(forms.ModelForm):
     pin = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = CustomerProfile
+        fields = ['profilename', 'pin', 'avatar']
+
+    def __init__(self, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+
+        # Set initial values for the fields based on the instance
+        if self.instance:
+            self.initial['profilename'] = self.instance.profilename
+            self.initial['pin'] = self.instance.pin
+            self.initial['avatar'] = self.instance.avatar
+
+class KidProfileForm(forms.ModelForm):
+    class Meta:
+        model = KidProfile
+        fields = ['profilename', 'avatar']

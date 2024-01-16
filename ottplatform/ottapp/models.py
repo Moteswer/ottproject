@@ -9,15 +9,24 @@ from django.db import models
 
 # Create your models here.
 class movie(models.Model):
+    customer_profile = models.ForeignKey('CustomerProfile', on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=50)
-    year = models.PositiveIntegerField()
-    desc = models.TextField
-    url= models.URLField
+    Duration = models.CharField(max_length=50,default='')
+    Genre= models.CharField(max_length=100,default='')
+    Director=models.CharField(max_length=100,default='')
+    year = models.CharField(max_length=100)
+    desc = models.TextField(default='')  # Set default value to an empty string
+    link = models.URLField(default='')
     rating = models.FloatField()
-    image1 = models.CharField( max_length=500)
-    image2 = models.CharField( max_length=500)
-    image3 = models.CharField( max_length=500)
-    image4 = models.CharField( max_length=500)
+    image = models.ImageField(upload_to='media/', default='')
+
+    def __str__(self):
+        return self.name
+
+class CustomerProfileImage(models.Model):
+    customer_profile = models.ForeignKey('CustomerProfile', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='media/', default='default_image.jpg')
+
 
 class series(models.Model):
     name = models.CharField(max_length=50)
@@ -149,9 +158,81 @@ class CustomerProfile(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='profile')
     profilename = models.CharField(max_length=50)
     pin = models.CharField(max_length=4)  
-    avatar = models.ImageField(upload_to='avatars/')
+    avatar = models.ImageField(upload_to='media/')
+
+    def __str__(self):
+        return self.profilename
 
 class KidProfile(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='kid_profiles')
     profilename = models.CharField(max_length=50)
-    avatar = models.ImageField(upload_to='avatars/')
+    avatar = models.ImageField(upload_to='media/')
+
+    def __str__(self):
+        return self.profilename
+
+class moviekid(models.Model):
+    kid_profile = models.ForeignKey(KidProfile, on_delete=models.CASCADE, related_name='movies')
+    title = models.CharField(max_length=100)
+    release_date = models.DateField()
+    genre = models.CharField(max_length=50)
+    description = models.TextField()
+    poster = models.ImageField(upload_to='media/')
+    link = models.URLField(default='')
+
+    def __str__(self):
+        return self.title
+    
+class waste(models.Model):
+    logo = models.ImageField(upload_to='waste/')
+
+
+class upcoming(models.Model):
+    name = models.CharField(max_length=50)
+    Duration = models.CharField(max_length=50,default='')
+    Genre= models.CharField(max_length=100,default='')
+    Director=models.CharField(max_length=100,default='')
+    year = models.PositiveIntegerField()
+    desc = models.TextField(default='')  # Set default value to an empty string
+    link = models.URLField(default='')
+    image = models.ImageField(upload_to='media/', default='')
+
+    def __str__(self):
+        return self.name
+    
+class PlanDetails(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+class SubscribedUser(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer_name = models.CharField(max_length=255)  # Add a field for customer's name
+    plan = models.ForeignKey(PlanDetails, on_delete=models.CASCADE)
+    subscription_date = models.DateTimeField(auto_now_add=True)
+
+
+class random(models.Model):
+    name = models.CharField(max_length=50)
+    Duration = models.CharField(max_length=50,default='')
+    Genre= models.CharField(max_length=100,default='')
+    Director=models.CharField(max_length=100,default='')
+    year = models.PositiveIntegerField()
+    desc = models.TextField(default='')  # Set default value to an empty string
+    link = models.URLField(default='')
+    image = models.ImageField(upload_to='media/', default='')
+
+    def __str__(self):
+        return self.name
+    
+
+class upcomingkid(models.Model):
+    name = models.CharField(max_length=50)
+    Duration = models.CharField(max_length=50,default='')
+    Genre= models.CharField(max_length=100,default='')
+    Director=models.CharField(max_length=100,default='')
+    year = models.PositiveIntegerField()
+    desc = models.TextField(default='')  # Set default value to an empty string
+    link = models.URLField(default='')
+    image = models.ImageField(upload_to='media/', default='')
+    
